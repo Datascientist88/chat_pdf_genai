@@ -26,7 +26,7 @@ def get_vectorestore_from_url(url):
     text_splitter = RecursiveCharacterTextSplitter()
     document_chunks = text_splitter.split_documents(document)
     # create vector stores
-    vectore_store =FAISS.from_texts(texts=document_chunks, embedding=OpenAIEmbeddings)
+    vectore_store =FAISS.from_texts(texts=document_chunks, embedding=OpenAIEmbeddings())
     return vectore_store
 
 
