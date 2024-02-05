@@ -2,7 +2,7 @@ import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
@@ -26,7 +26,7 @@ def get_vectorestore_from_url(url):
     text_splitter = RecursiveCharacterTextSplitter()
     document_chunks = text_splitter.split_documents(document)
     # create vector stores
-    vectore_store = Chroma.from_documents(document_chunks, OpenAIEmbeddings())
+    vectore_store =FAISS.from_texts(texts=document_chunks, embedding=OpenAIEmbeddings)
     return vectore_store
 
 
