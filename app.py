@@ -26,9 +26,8 @@ def get_vectorestore_from_url(url):
     text_splitter = RecursiveCharacterTextSplitter()
     document_chunks = text_splitter.split_documents(document)
      # Flatten the list of lists into a single list of strings
-    texts = [chunk for sublist in document_chunks for chunk in sublist]
     # create vector stores
-    vectore_store =FAISS.from_texts(texts=texts, embedding=OpenAIEmbeddings())
+    vectore_store =FAISS.from_documents(document_chunks, OpenAIEmbeddings())
     return vectore_store
 
 
