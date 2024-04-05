@@ -135,7 +135,7 @@ with open('style.css') as f:
     PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
     if PDF is None or PDF == "":
         st.info("**Please Upload your Pdf File 📚📗**")
-   else:
+    else:
         if "chat_history" not in st.session_state:
             st.session_state.chat_history = [
                 AIMessage(content="Hello how can I help you ?")
