@@ -121,14 +121,23 @@ with open('style.css') as f:
         """,
         unsafe_allow_html=True
     )
-    if "chat_history" not in st.session_state:
+     if "chat_history" not in st.session_state:
         st.session_state.chat_history = [
             AIMessage(
-                content=" Hello ! with you is RAG chatbot  how can I assist you today ? 🥰"
+                content=" Hello ! with you is Dr Formula Assistant chatbot  how can I assist you today  with your drug formulation questions related questions? 🥰"
             )
         ]
-   
 PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
+if "vectore_store" not in st.session_state:
+        st.session_state.vectore_store = get_vectorestore_from_url(PDF)
+for message in st.session_state.chat_history:
+    if isinstance(message, AIMessage):
+        with st.chat_message("AI", avatar="🤖"):
+                st.write(message.content)
+    elif isinstance(message, HumanMessage):
+            with st.chat_message("Human", avatar="👨‍⚕️"):
+                st.write(message.content)
+   
 if PDF is None or PDF == "":
     st.info("**Please Upload your Pdf File 📚📗**")
 else:
@@ -150,11 +159,4 @@ else:
             autoplay_audio(response_audio_file)
             st.session_state.chat_history.append(AIMessage(content=response))
        
-    # conversation:
-    for message in st.session_state.chat_history:
-        if isinstance(message, AIMessage):
-            with st.chat_message("AI"):
-                st.write(message.content)
-        elif isinstance(message, HumanMessage):
-            with st.chat_message("Human"):
-                st.write(message.content)
+    
