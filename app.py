@@ -99,28 +99,21 @@ with open('style.css') as f:
     name = " Developed by:Mohammed Bahageel"
     profession = "Artificial Intelligence developer"
     imgUrl="https://image.similarpng.com/very-thumbnail/2020/07/Pharmacy-logo-vector-PNG.png"
-    styles={
-            "container": {"padding": "0!important", "background-color": "white" },
-            "icon": {"color": "red", "font-size": "18px" }, 
-            "nav-link": {"font-size": "18px", "text-align": "center", "margin":"0px", "--hover-color": "hsl(264, 100%, 61%)"},
-            "nav-link-selected": {"background-color": " hsl(264, 100%, 61%)"},
-        }
-    
-  st.markdown(
-        f"""
-        <div class="st-emotion-cache-18ni7ap ezrtsby2">
-            <a href="{imgUrl}">
-                <img class="profileImage" src="{imgUrl}" alt="Your Photo">
-            </a>
-            <div class="textContainer">
-                <div class="title"><p>{title}</p></div>
-                <p>{name}</p>
-                <p>{profession}</p>
+    st.markdown(
+            f"""
+            <div class="st-emotion-cache-18ni7ap ezrtsby2">
+                <a href="{imgUrl}">
+                    <img class="profileImage" src="{imgUrl}" alt="Your Photo">
+                </a>
+                <div class="textContainer">
+                    <div class="title"><p>{title}</p></div>
+                    <p>{name}</p>
+                    <p>{profession}</p>
+                </div>
             </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+            """,
+            unsafe_allow_html=True
+        )
 
 PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
 if PDF is None or PDF == "":
