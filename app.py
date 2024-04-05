@@ -127,30 +127,34 @@ with open('style.css') as f:
                 content=" Hello ! with you is RAG chatbot  how can I assist you today ? 🥰"
             )
         ]
-    with st.sidebar:
-        st.header("settings ✅")
-        st.markdown(
-            "The application was developed by **Mohammed Bahageel** artificial intelligence scientist as a part of his experiments with retrieval augmentated generation in generative AI, please note that bigger PDF files might result in token errors"
-        )
-    PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
-    if PDF is None or PDF == "":
-        st.info("**Please Upload your Pdf File 📚📗**")
-    else:
-        if "chat_history" not in st.session_state:
-            st.session_state.chat_history = [
-                AIMessage(content="Hello how can I help you ?")
-            ]
-        if "vectore_store" not in st.session_state:
-            st.session_state.vectore_store = get_vectorestore_from_url(PDF)
-            user_query = st.chat_input("Type your message here...")
-            #response = get_response(user_query)
-            if user_query is not None and user_query != "":
-                st.session_state.chat_history.append(HumanMessage(content=user_query))
-                with st.chat_message("Human", avatar="👨‍⚕️"):
-                    st.markdown(user_query)
-                with st.chat_message("AI", avatar="🤖"):
-                    response=st.write_stream(get_response(user_query))
-                    response_audio_file = "audio_response.mp3"
-                    text_to_audio(client, response, response_audio_file)
-                    autoplay_audio(response_audio_file)
-                    st.session_state.chat_history.append(AIMessage(content=response))
+   
+PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
+if PDF is None or PDF == "":
+    st.info("**Please Upload your Pdf File 📚📗**")
+else:
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = [
+            AIMessage(content="Hello how can I help you ?")
+        ]
+    if "vectore_store" not in st.session_state:
+        st.session_state.vectore_store = get_vectorestore_from_url(PDF)
+    user_query = st.chat_input("chat with your app")
+    if user_query is not None and user_query != "":
+        st.session_state.chat_history.append(HumanMessage(content=user_query))
+        with st.chat_message("Human", avatar="👨‍⚕️"):
+            st.markdown(user_query)
+        with st.chat_message("AI", avatar="🤖"):
+            response=st.write_stream(get_response(user_query))
+            response_audio_file = "audio_response.mp3"
+            text_to_audio(client, response, response_audio_file)
+            autoplay_audio(response_audio_file)
+            st.session_state.chat_history.append(AIMessage(content=response))
+       
+    # conversation:
+    for message in st.session_state.chat_history:
+        if isinstance(message, AIMessage):
+            with st.chat_message("AI"):
+                st.write(message.content)
+        elif isinstance(message, HumanMessage):
+            with st.chat_message("Human"):
+                st.write(message.content)
