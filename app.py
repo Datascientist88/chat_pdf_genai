@@ -92,8 +92,8 @@ def autoplay_audio(audio_file):
 
 
 st.set_page_config(page_title="chat with Your Pdf Files", page_icon="📚📗")
- with open('style.css') as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+with open('style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
     title="Retrieval Augmented Generation"
     name = " Developed by:Mohammed Bahageel"
@@ -127,26 +127,31 @@ st.set_page_config(page_title="chat with Your Pdf Files", page_icon="📚📗")
                 content=" Hello ! with you is RAG chatbot  how can I assist you today ? 🥰"
             )
         ]
-    response_audio_file = "audio_response.mp3"
-    if "vector_store" not in st.session_state:
-        st.session_state.vector_store = get_vector_store()
-    for message in st.session_state.chat_history:
-        if isinstance(message, AIMessage):
-            with st.chat_message("AI", avatar="🤖"):
-                st.write(message.content)
-        elif isinstance(message, HumanMessage):
-            with st.chat_message("Human", avatar="👨‍⚕️"):
-                st.write(message.content)
-    # user input
-    user_query = st.chat_input("Type your message here...")
-    #response = get_response(user_query)
-    if user_query is not None and user_query != "":
-        st.session_state.chat_history.append(HumanMessage(content=user_query))
-        with st.chat_message("Human", avatar="👨‍⚕️"):
-            st.markdown(user_query)
-        with st.chat_message("AI", avatar="🤖"):
-            response=st.write_stream(get_response(user_query))
-            response_audio_file = "audio_response.mp3"
-            text_to_audio(client, response, response_audio_file)
-            autoplay_audio(response_audio_file)
-            st.session_state.chat_history.append(AIMessage(content=response))
+    with st.sidebar:
+        st.header("settings ✅")
+        st.markdown(
+            "The application was developed by **Mohammed Bahageel** artificial intelligence scientist as a part of his experiments with retrieval augmentated generation in generative AI, please note that bigger PDF files might result in token errors"
+        )
+    PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
+    if PDF is None or PDF == "":
+        st.info("**Please Upload your Pdf File 📚📗**")
+   else:
+        if "chat_history" not in st.session_state:
+            st.session_state.chat_history = [
+                AIMessage(content="Hello how can I help you ?")
+            ]
+        if "vectore_store" not in st.session_state:
+            st.session_state.vectore_store = get_vectorestore_from_url(PDF)
+        user_query = st.chat_input("chat with your app")
+            user_query = st.chat_input("Type your message here...")
+            #response = get_response(user_query)
+            if user_query is not None and user_query != "":
+                st.session_state.chat_history.append(HumanMessage(content=user_query))
+                with st.chat_message("Human", avatar="👨‍⚕️"):
+                    st.markdown(user_query)
+                with st.chat_message("AI", avatar="🤖"):
+                    response=st.write_stream(get_response(user_query))
+                    response_audio_file = "audio_response.mp3"
+                    text_to_audio(client, response, response_audio_file)
+                    autoplay_audio(response_audio_file)
+                    st.session_state.chat_history.append(AIMessage(content=response))
