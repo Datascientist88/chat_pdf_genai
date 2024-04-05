@@ -106,7 +106,7 @@ with open('style.css') as f:
             "nav-link-selected": {"background-color": " hsl(264, 100%, 61%)"},
         }
     
-    st.markdown(
+  st.markdown(
         f"""
         <div class="st-emotion-cache-18ni7ap ezrtsby2">
             <a href="{imgUrl}">
@@ -121,16 +121,17 @@ with open('style.css') as f:
         """,
         unsafe_allow_html=True
     )
- if "chat_history" not in st.session_state:
+
+PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
+if PDF is None or PDF == "":
+    st.info("**Please Upload your Pdf File 📚📗**")
+else:
+     if "chat_history" not in st.session_state:
         st.session_state.chat_history = [
             AIMessage(
                 content=" Hello ! with you RAG based ChatBot How can I assist you today ? 🥰"
             )
         ]
-PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
-if PDF is None or PDF == "":
-    st.info("**Please Upload your Pdf File 📚📗**")
-else:
     if "vector_store" not in st.session_state:
         st.session_state.vectore_store = get_vectorestore_from_url(PDF)
     for message in st.session_state.chat_history:
