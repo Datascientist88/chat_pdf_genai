@@ -69,7 +69,7 @@ def get_conversational_rag_chain(retriever_chain):
 def get_response(user_input):
     retriever_chain = get_context_retriever_chain(st.session_state.vectore_store)
     conversation_rag_chain = get_conversational_rag_chain(retriever_chain)
-    response = conversation_rag_chain.stream(
+    response_stream = conversation_rag_chain.stream(
         {"chat_history": st.session_state.chat_history, "input": user_query}
     )
     for chunk in response_stream:
