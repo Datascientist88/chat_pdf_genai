@@ -48,7 +48,7 @@ div.st-emotion-cache-4oy321.eeusbqq4 {
    background-color: white;
    border-radius: 20px;
    margin-top: 5px;
-  /* animation: fade-in-right 2s ease-in-out both;*/
+   animation: fade-in-right 2s ease-in-out both;
 
 }
 /*format audio*/
@@ -70,7 +70,7 @@ div.st-emotion-cache-1c7y2kd.eeusbqq4 {
    max-width: 60%;
    margin-bottom: 0%;
    flex-direction: row-reverse;
-   /*animation: fade-in-left 1s ease-in-out both*/
+   animation: fade-in-left 1s ease-in-out both
 }
 
 div.st-emotion-cache-1c7y2kd.eeusbqq4 p {
@@ -97,7 +97,7 @@ div.eeusbqq2 {
 
 }
 
-/*
+
 @keyframes fade-in-right {
    0% {
        transform: translate(-50%);
