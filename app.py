@@ -121,12 +121,6 @@ with open('style.css') as f:
         """,
         unsafe_allow_html=True
     )
-     if "chat_history" not in st.session_state:
-        st.session_state.chat_history = [
-            AIMessage(
-                content=" Hello ! with you is Dr Formula Assistant chatbot  how can I assist you today  with your drug formulation questions related questions? 🥰"
-            )
-        ]
 PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
 for message in st.session_state.chat_history:
     if isinstance(message, AIMessage):
