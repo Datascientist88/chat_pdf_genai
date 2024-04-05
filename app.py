@@ -142,7 +142,6 @@ with open('style.css') as f:
             ]
         if "vectore_store" not in st.session_state:
             st.session_state.vectore_store = get_vectorestore_from_url(PDF)
-        user_query = st.chat_input("chat with your app")
             user_query = st.chat_input("Type your message here...")
             #response = get_response(user_query)
             if user_query is not None and user_query != "":
