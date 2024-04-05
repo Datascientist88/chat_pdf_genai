@@ -128,8 +128,6 @@ with open('style.css') as f:
             )
         ]
 PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
-if "vectore_store" not in st.session_state:
-        st.session_state.vectore_store = get_vectorestore_from_url(PDF)
 for message in st.session_state.chat_history:
     if isinstance(message, AIMessage):
         with st.chat_message("AI", avatar="🤖"):
