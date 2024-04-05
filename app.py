@@ -9,6 +9,8 @@ from langchain.chains import create_history_aware_retriever, create_retrieval_ch
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from dotenv import load_dotenv
 import os
+import base64
+from openai import OpenAI
 
 load_dotenv()
 
@@ -67,40 +69,84 @@ def get_conversational_rag_chain(retriever_chain):
 def get_response(user_input):
     retriever_chain = get_context_retriever_chain(st.session_state.vectore_store)
     conversation_rag_chain = get_conversational_rag_chain(retriever_chain)
-    response = conversation_rag_chain.invoke(
+    response = conversation_rag_chain.stream(
         {"chat_history": st.session_state.chat_history, "input": user_query}
     )
-    return response["answer"]
+    for chunk in response_stream:
+        content=chunk.get("answer","")
+        yield content
+# convert text back to audio
+def text_to_audio(client, text, audio_path):
+    response = client.audio.speech.create(model="tts-1", voice="fable", input=text)
+    response.stream_to_file(audio_path)
+client = OpenAI()
+# autoplay audio function
+def autoplay_audio(audio_file):
+    with open(audio_file, "rb") as audio_file:
+        audio_bytes = audio_file.read()
+    base64_audio = base64.b64encode(audio_bytes).decode("utf-8")
+    audio_html = (
+        f'<audio src="data:audio/mp3;base64 ,{base64_audio}" controls autoplay>'
+    )
+    st.markdown(audio_html, unsafe_allow_html=True)
 
 
 st.set_page_config(page_title="chat with Your Pdf Files", page_icon="📚📗")
-st.title("Chat With Your Pdf Files 📚📗")
-with st.sidebar:
-    st.header("settings ✅")
+ with open('style.css') as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+    title="Retrieval Augmented Generation"
+    name = " Developed by:Mohammed Bahageel"
+    profession = "Artificial Intelligence developer"
+    imgUrl="https://image.similarpng.com/very-thumbnail/2020/07/Pharmacy-logo-vector-PNG.png"
+    styles={
+            "container": {"padding": "0!important", "background-color": "white" },
+            "icon": {"color": "red", "font-size": "18px" }, 
+            "nav-link": {"font-size": "18px", "text-align": "center", "margin":"0px", "--hover-color": "hsl(264, 100%, 61%)"},
+            "nav-link-selected": {"background-color": " hsl(264, 100%, 61%)"},
+        }
+    
     st.markdown(
-        "The application was developed by **Mohammed Bahageel** artificial intelligence scientist as a part of his experiments with retrieval augmentated generation in generative AI, please note that bigger PDF files might result in token errors"
+        f"""
+        <div class="st-emotion-cache-18ni7ap ezrtsby2">
+            <a href="{imgUrl}">
+                <img class="profileImage" src="{imgUrl}" alt="Your Photo">
+            </a>
+            <div class="textContainer">
+                <div class="title"><p>{title}</p></div>
+                <p>{name}</p>
+                <p>{profession}</p>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
-    PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
-if PDF is None or PDF == "":
-    st.info("**Please Upload your Pdf File 📚📗**")
-else:
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = [
-            AIMessage(content="Hello how can I help you ?")
+            AIMessage(
+                content=" Hello ! with you is RAG chatbot  how can I assist you today ? 🥰"
+            )
         ]
-    if "vectore_store" not in st.session_state:
-        st.session_state.vectore_store = get_vectorestore_from_url(PDF)
-    user_query = st.chat_input("chat with your app")
-    if user_query is not None and user_query != "":
-        response = get_response(user_query)
-
-        st.session_state.chat_history.append(HumanMessage(content=user_query))
-        st.session_state.chat_history.append(AIMessage(content=response))
-    # conversation:
+    response_audio_file = "audio_response.mp3"
+    if "vector_store" not in st.session_state:
+        st.session_state.vector_store = get_vector_store()
     for message in st.session_state.chat_history:
         if isinstance(message, AIMessage):
-            with st.chat_message("AI"):
+            with st.chat_message("AI", avatar="🤖"):
                 st.write(message.content)
         elif isinstance(message, HumanMessage):
-            with st.chat_message("Human"):
+            with st.chat_message("Human", avatar="👨‍⚕️"):
                 st.write(message.content)
+    # user input
+    user_query = st.chat_input("Type your message here...")
+    #response = get_response(user_query)
+    if user_query is not None and user_query != "":
+        st.session_state.chat_history.append(HumanMessage(content=user_query))
+        with st.chat_message("Human", avatar="👨‍⚕️"):
+            st.markdown(user_query)
+        with st.chat_message("AI", avatar="🤖"):
+            response=st.write_stream(get_response(user_query))
+            response_audio_file = "audio_response.mp3"
+            text_to_audio(client, response, response_audio_file)
+            autoplay_audio(response_audio_file)
+            st.session_state.chat_history.append(AIMessage(content=response))
