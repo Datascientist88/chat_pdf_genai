@@ -6,3 +6,4 @@ python-dotenv==1.0.1
 streamlit==1.30.0
 faiss-cpu==1.7.4
 pypdf
+openai
