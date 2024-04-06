@@ -121,7 +121,7 @@ with open("style.css") as f:
             """,
         unsafe_allow_html=True,
     )
-user_query = st.chat_input("Type your message here...")
+
 PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
 if PDF is None or PDF == "":
     st.info("**Please Upload your Pdf File 📚📗**")
@@ -132,27 +132,25 @@ else:
                 content=" Hello ! with you RAG based ChatBot How can I assist you today ? 🥰"
             )
         ]
-        if "vector_store" not in st.session_state:
-            st.session_state.vectore_store = get_vectorestore_from_url(PDF)
-        for message in st.session_state.chat_history:
-            if isinstance(message, AIMessage):
-                with st.chat_message("AI", avatar="🤖"):
-                    st.write(message.content)
-            elif isinstance(message, HumanMessage):
-                with st.chat_message("Human", avatar="👨‍⚕️"):
-                    st.write(message.content)
-        # user input
-        # response = get_response(user_query)
-        if user_query is not None and user_query != "":
-            st.session_state.chat_history.append(HumanMessage(content=user_query))
-            with st.chat_message("Human", avatar="👨‍⚕️"):
-                st.markdown(user_query)
+    if "vector_store" not in st.session_state:
+        st.session_state.vectore_store = get_vectorestore_from_url(PDF)
+    for message in st.session_state.chat_history:
+        if isinstance(message, AIMessage):
             with st.chat_message("AI", avatar="🤖"):
-                response = st.write_stream(get_response(user_query))
-                response_audio_file = "audio_response.mp3"
-                text_to_audio(client, response, response_audio_file)
-                autoplay_audio(response_audio_file)
-                st.session_state.chat_history.append(AIMessage(content=response))
-
-       
-    
+                st.write(message.content)
+        elif isinstance(message, HumanMessage):
+            with st.chat_message("Human", avatar="👨‍⚕️"):
+                st.write(message.content)
+    # user input
+    user_query = st.chat_input("Type your message here...")
+    # response = get_response(user_query)
+    if user_query is not None and user_query != "":
+        st.session_state.chat_history.append(HumanMessage(content=user_query))
+        with st.chat_message("Human", avatar="👨‍⚕️"):
+            st.markdown(user_query)
+        with st.chat_message("AI", avatar="🤖"):
+            response = st.write_stream(get_response(user_query))
+            response_audio_file = "audio_response.mp3"
+            text_to_audio(client, response, response_audio_file)
+            autoplay_audio(response_audio_file)
+            st.session_state.chat_history.append(AIMessage(content=response))
