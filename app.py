@@ -121,7 +121,7 @@ with open("style.css") as f:
             """,
         unsafe_allow_html=True,
     )
-
+user_query = st.chat_input("Type your message here...")
 PDF = st.file_uploader("Upload your pdf file", type=["pdf"])
 if PDF is None or PDF == "":
     st.info("**Please Upload your Pdf File 📚📗**")
@@ -142,7 +142,6 @@ else:
                 with st.chat_message("Human", avatar="👨‍⚕️"):
                     st.write(message.content)
         # user input
-        user_query = st.chat_input("Type your message here...")
         # response = get_response(user_query)
         if user_query is not None and user_query != "":
             st.session_state.chat_history.append(HumanMessage(content=user_query))
