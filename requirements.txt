@@ -3,7 +3,7 @@ langchain_community
 langchain_core
 langchain_openai
 python-dotenv
-streamlit
+streamlit==1.34.0.
 faiss-cpu
 pypdf
 openai
